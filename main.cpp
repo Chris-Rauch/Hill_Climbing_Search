@@ -19,7 +19,9 @@ void display(const node& board);
 bool isGoalState(const node& board);
 void calcHeuristic(node& board);
 vector<node> getChildren(node& board);
-
+// helpers for debugging
+void displayFrontier(priority_queue<node, std::vector<node>, CompareHeuristic> frontier);
+void displayVisited(list<node> visited);
 
 int main() {
     priority_queue<node, std::vector<node>, CompareHeuristic> frontier;
@@ -27,16 +29,21 @@ int main() {
     node board;
 
     randomize(board);
+    calcHeuristic(board);
     frontier.push(board);
 
     //A*
-    while(true) {
+    int count = 0;
+    while(count < 100000) {
         //pop node off frontier
         node temp(frontier.top());
         frontier.pop();
+        //cout << "popped off frontier:\n";
+        //display(temp);
 
         //check goal state
         if(isGoalState(temp)) {
+            cout << "Goal State:\n";
             display(temp);
             break;
         }
@@ -47,7 +54,7 @@ int main() {
         for(it = visited.begin(); it != visited.end(); ++it) {
             if(*it == temp) {
                 wasVisited = true;
-                break;
+                //break;
             } 
         }
 
@@ -62,6 +69,10 @@ int main() {
                 frontier.push(children[x]);
             }
         }
+        else {
+            //cout << "already visited...\n";
+        }
+        ++count;
     }
 
     return 1;
@@ -76,6 +87,7 @@ vector<node> getChildren(node& board) {
     if(board.currPos / size != 0) {
         //create a new node and copy current board state
         node child(board);
+        calcHeuristic(board);
         
         //swap the 0 tile with the above tile
         child.value[child.currPos] = board.value[board.currPos - size];
@@ -160,7 +172,7 @@ void calcHeuristic(node& board) {
         int currColumn = x % size;
 
         //add there differences
-        heuristic =+ abs(goalRow-currRow) + abs(goalColumn-currColumn);
+        heuristic += abs(goalRow-currRow) + abs(goalColumn-currColumn);
     }
     board.heuristic = heuristic;
 }
@@ -206,8 +218,15 @@ void display(const node& board) {
         }
         cout << board.value[x] << " ";
     }
-    cout << "Current Position: " << board.currPos << endl;
+    cout << "\nCurrent Position: " << board.currPos << endl;
+    cout << "Heuristic:: " << board.heuristic << endl;
 }
-
-
+/*
+void displayFrontier(priority_queue<node, std::vector<node>, CompareHeuristic> frontier) {
+    for(int x = 0; x < frontier.size(); ++x) {
+        display(frontier[x]);
+    }
+}
+void displayVisited(list<node> visited)
+* */
 #endif
