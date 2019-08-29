@@ -17,7 +17,7 @@ struct CompareHeuristic {
     }
 };
 
-node::node(const node& rhs) : heuristic(rhs.heuristic), currPos(rhs.heuristic) {
+node::node(const node& rhs) : heuristic(rhs.heuristic), currPos(rhs.currPos) {
     for(short x = 0; x < SIZE; ++x) {
         this->value[x] = rhs.value[x];
     }
