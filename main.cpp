@@ -27,6 +27,7 @@ int main() {
     node board;
 
     randomize(board);
+    calcHeuristic(board);
     frontier.push(board);
 
     //A*
@@ -34,9 +35,11 @@ int main() {
         //pop node off frontier
         node temp(frontier.top());
         frontier.pop();
+        //display(temp);
 
         //check goal state
         if(isGoalState(temp)) {
+            cout << "\n==== Goal State ====\n";
             display(temp);
             break;
         }
@@ -47,7 +50,6 @@ int main() {
         for(it = visited.begin(); it != visited.end(); ++it) {
             if(*it == temp) {
                 wasVisited = true;
-                break;
             } 
         }
 
@@ -76,6 +78,7 @@ vector<node> getChildren(node& board) {
     if(board.currPos / size != 0) {
         //create a new node and copy current board state
         node child(board);
+        calcHeuristic(board);
         
         //swap the 0 tile with the above tile
         child.value[child.currPos] = board.value[board.currPos - size];
@@ -83,7 +86,8 @@ vector<node> getChildren(node& board) {
         child.currPos = board.currPos - size;
         
         //calc new heuristic
-        calcHeuristic(child);
+        calcHeuristic(child); //h(x)
+        child.heuristic += 1; //g(x)
         
         //add to children vector
         children.push_back(child);
@@ -100,7 +104,8 @@ vector<node> getChildren(node& board) {
         child.currPos = board.currPos + size;
         
         //calc new heuristic
-        calcHeuristic(child);
+        calcHeuristic(child); //h(x)
+        child.heuristic += 1; //g(x)
         
         //add to children vector
         children.push_back(child);
@@ -117,7 +122,8 @@ vector<node> getChildren(node& board) {
         child.currPos = board.currPos - 1;
         
         //calc new heuristic
-        calcHeuristic(child);
+        calcHeuristic(child); //h(x)
+        child.heuristic += 1; //g(x)
         
         //add to children vector
         children.push_back(child);
@@ -134,7 +140,8 @@ vector<node> getChildren(node& board) {
         child.currPos = board.currPos + 1;
         
         //calc new heuristic
-        calcHeuristic(child);
+        calcHeuristic(child); //h(x)
+        child.heuristic += 1; //g(x)
         
         //add to children vector
         children.push_back(child);
@@ -159,8 +166,8 @@ void calcHeuristic(node& board) {
         int currRow = x / size;
         int currColumn = x % size;
 
-        //add there differences
-        heuristic =+ abs(goalRow-currRow) + abs(goalColumn-currColumn);
+        //add their differences
+        heuristic += abs(goalRow-currRow) + abs(goalColumn-currColumn);
     }
     board.heuristic = heuristic;
 }
@@ -206,8 +213,8 @@ void display(const node& board) {
         }
         cout << board.value[x] << " ";
     }
-    cout << "Current Position: " << board.currPos << endl;
+    cout << "\nCurrent Position: " << board.currPos << endl;
+    cout << "Heuristic:: " << board.heuristic << endl;
 }
-
 
 #endif
