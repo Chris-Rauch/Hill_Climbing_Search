@@ -34,7 +34,7 @@ int main() {
 
     //A*
     int count = 0;
-    while(count < 100000) {
+    while(true) {
         //pop node off frontier
         node temp(frontier.top());
         frontier.pop();
@@ -72,7 +72,7 @@ int main() {
         else {
             //cout << "already visited...\n";
         }
-        ++count;
+        //++count;
     }
 
     return 1;
